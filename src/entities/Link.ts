@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, Relation } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, Relation } from 'typeorm';
 import { User } from './User';
 
 @Entity()
@@ -15,7 +15,6 @@ export class Link {
   @Column({ default: 0 })
   numHits: number;
 
-  @OneToOne(() => User, (user) => user.link)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.links, { cascade: ['insert', 'update'] })
   user: Relation<User>;
 }
