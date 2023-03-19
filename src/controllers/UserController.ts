@@ -10,8 +10,8 @@ async function registerUser(req: Request, res: Response): Promise<void> {
   // Wrap the call to `addNewUser` in a try/catch like in the sample code
   const { username, password } = req.body as AuthRequest;
   const user = await getUserByUsername(username);
-  if (!user) {
-    res.sendStatus(404); // 404 Not Found - username doesn't exist
+  if (user) {
+    res.sendStatus(403); // 403 Forbidden - username exists
     return;
   }
 
@@ -45,6 +45,8 @@ async function logIn(req: Request, res: Response): Promise<void> {
   await req.session.clearSession();
   req.session.authenticatedUser = {
     userId: user.userId,
+    isPro: true,
+    isAdmin: true,
     username: user.username,
   };
   req.session.isLoggedIn = true;

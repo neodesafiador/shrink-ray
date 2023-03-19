@@ -6,6 +6,8 @@ declare module 'express-session' {
 
     authenticatedUser: {
       userId: string;
+      isPro: true;
+      isAdmin: true;
       username: string;
     };
     isLoggedIn: boolean;
