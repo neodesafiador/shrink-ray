@@ -4,9 +4,7 @@ import { Link } from '../entities/Link';
 const linkRepository = AppDataSource.getRepository(Link);
 
 async function getLinkById(linkId: string): Promise<Link[] | null> {
-  if (!linkId) {
-    return null;
-  }
+  // The getMany function will return null if the linkId doesn't match an account
   const links = await linkRepository
     .createQueryBuilder('link')
     .leftJoinAndSelect('link.user', 'link')
