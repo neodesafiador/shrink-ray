@@ -6,9 +6,7 @@ const userRepository = AppDataSource.getRepository(User);
 async function getUserByUsername(username: string): Promise<User | null> {
   // TODO: Get the user by where the username matches the parameter
   // This should also retrieve the `links` relation
-  if (!username) {
-    return null;
-  }
+  // The getOne function will return null if the userId doesn't match an account
   const user = await userRepository
     .createQueryBuilder('user')
     .leftJoinAndSelect('user.links', 'user')
@@ -30,9 +28,7 @@ async function addNewUser(username: string, passwordHash: string): Promise<User 
 }
 
 async function getUserById(userId: string): Promise<User | null> {
-  if (!userId) {
-    return null;
-  }
+  // The getOne function will return null if the userId doesn't match an account
   const user = await userRepository
     .createQueryBuilder('user')
     .leftJoinAndSelect('user.links', 'user')
