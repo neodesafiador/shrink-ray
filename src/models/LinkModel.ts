@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import { AppDataSource } from '../dataSource';
 import { Link } from '../entities/Link';
+import { User } from '../entities/User';
 
 const linkRepository = AppDataSource.getRepository(Link);
 
@@ -20,9 +21,25 @@ function createLinkId(originalUrl: string, userId: string): string {
   // Concatenate the original url and userId
   md5.update(`${originalUrl}${userId}`);
   const urlHash = md5.digest('base64url');
+  // Get only the first 9 characters of `urlHash`
   const linkId = urlHash.slice(0, 9);
 
   return linkId;
 }
 
-export { getLinkById, createLinkId };
+async function createNewLink(originalUrl: string, linkId: string, creator: User): Promise<Link> {
+  let newLink = new Link();
+  const date: Date = new Date();
+
+  newLink.originalUrl = originalUrl;
+  newLink.linkId = linkId;
+  newLink.lastAccessedOn = date;
+  newLink.numHits = 0;
+  newLink.user = creator;
+
+  newLink = await linkRepository.save(newLink);
+
+  return newLink;
+}
+
+export { getLinkById, createLinkId, createNewLink };
