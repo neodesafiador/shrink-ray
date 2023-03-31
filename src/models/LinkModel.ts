@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { AppDataSource } from '../dataSource';
 import { Link } from '../entities/Link';
 
@@ -14,4 +15,14 @@ async function getLinkById(linkId: string): Promise<Link[] | null> {
   return links;
 }
 
-export { getLinkById };
+function createLinkId(originalUrl: string, userId: string): string {
+  const md5 = createHash('md5');
+  // Concatenate the original url and userId
+  md5.update(`${originalUrl}${userId}`);
+  const urlHash = md5.digest('base64url');
+  const linkId = urlHash.slice(0, 9);
+
+  return linkId;
+}
+
+export { getLinkById, createLinkId };
