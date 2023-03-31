@@ -42,4 +42,18 @@ async function createNewLink(originalUrl: string, linkId: string, creator: User)
   return newLink;
 }
 
-export { getLinkById, createLinkId, createNewLink };
+async function updateLinkVisits(link: Link): Promise<Link> {
+  // Increment the link's number of hits property
+  let updatedLink = link;
+  // Create a new date object and assign it to the link's `lastAccessedOn` property
+  const updatedDate = new Date();
+  // Update the link's numHits and lastAccessedOn in the database
+  updatedLink.numHits += 1;
+  updatedLink.lastAccessedOn = updatedDate;
+
+  updatedLink = await linkRepository.save(updatedLink);
+
+  return updatedLink;
+}
+
+export { getLinkById, createLinkId, createNewLink, updateLinkVisits };
