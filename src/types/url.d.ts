@@ -1,0 +1,3 @@
+type OriginalUrl = {
+  originalUrl: string;
+};
