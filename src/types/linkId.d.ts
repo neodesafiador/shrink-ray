@@ -1,0 +1,3 @@
+type TargetLinkId = {
+  targetLinkId: string;
+};
