@@ -33,7 +33,7 @@ app.post('/api/login', logIn); // Log in to an account
 app.post('/api/shortlink', shortenUrl); // Create a shortened link
 app.get('/api/:targetLinkId', getOriginalUrl);
 app.post('/api/users/:userId/links', getLinkForProAdmin);
-app.delete('/api/users/:userId/links/:userId', deleteLink);
+app.delete('/api/users/:userId/links/:linkId', deleteLink);
 
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}`);
