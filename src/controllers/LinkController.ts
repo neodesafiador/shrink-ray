@@ -1,5 +1,12 @@
 import { Request, Response } from 'express';
-import { createLinkId, createNewLink, getLinkById, updateLinkVisits } from '../models/LinkModel';
+import {
+  createLinkId,
+  createNewLink,
+  getLinkById,
+  updateLinkVisits,
+  getLinksByUserId,
+  getLinksByUserIdForOwnAccount,
+} from '../models/LinkModel';
 import { getUserById } from '../models/UserModel';
 import { parseDatabaseError } from '../utils/db-utils';
 
@@ -60,4 +67,31 @@ async function getOriginalUrl(req: Request, res: Response): Promise<void> {
   res.redirect(301, linkData.originalUrl);
 }
 
-export { shortenUrl, getOriginalUrl };
+async function getLinkForProAdmin(req: Request, res: Response): Promise<void> {
+  const { userId } = req.body as ProAdminUser;
+  const user = await getUserById(userId);
+
+  if (!user) {
+    res.sendStatus(404);
+    return;
+  }
+
+  try {
+    if (req.session.isLoggedIn && req.session.authenticatedUser.userId === userId) {
+      const links = await getLinksByUserIdForOwnAccount(userId);
+      res.json(links);
+    } else if (req.session.isLoggedIn && req.session.authenticatedUser.isAdmin) {
+      const links = await getLinksByUserId(userId);
+      res.json(links);
+    } else if (req.session.isLoggedIn && req.session.authenticatedUser.isPro) {
+      const links = await getLinksByUserId(userId);
+      res.json(links);
+    }
+  } catch (err) {
+    console.error(err);
+    const databaseErrorMessage = parseDatabaseError(err);
+    res.sendStatus(500).json(databaseErrorMessage);
+  }
+}
+
+export { shortenUrl, getOriginalUrl, getLinkForProAdmin };
