@@ -31,7 +31,7 @@ app.use(express.json());
 app.post('/api/users', registerUser); // Create an account
 app.post('/api/login', logIn); // Log in to an account
 app.post('/api/shortlink', shortenUrl); // Create a shortened link
-app.post('/api/:targetLinkId', getOriginalUrl);
+app.get('/api/:targetLinkId', getOriginalUrl);
 app.post('/api/users/:userId/links', getLinkForProAdmin);
 app.delete('/api/users/:userId/links/:userId', deleteLink);
 
