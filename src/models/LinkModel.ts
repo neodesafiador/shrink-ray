@@ -5,15 +5,15 @@ import { User } from '../entities/User';
 
 const linkRepository = AppDataSource.getRepository(Link);
 
-async function getLinkById(linkId: string): Promise<Link[] | null> {
+async function getLinkById(linkId: string): Promise<Link | null> {
   // The getMany function will return null if the linkId doesn't match an account
-  const links = await linkRepository
+  const link = await linkRepository
     .createQueryBuilder('link')
-    .leftJoinAndSelect('link.user', 'link')
-    .where('link.linkId = :linkId', { linkId })
-    .getMany();
+    .where({ linkId })
+    .select(['link.linkId', 'link.originalUrl', 'link.isAccessedOn', 'link.numHit', 'link.user'])
+    .getOne();
 
-  return links;
+  return link;
 }
 
 function createLinkId(originalUrl: string, userId: string): string {
