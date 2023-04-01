@@ -97,7 +97,7 @@ async function getLinkForProAdmin(req: Request, res: Response): Promise<void> {
 
 async function deleteLink(req: Request, res: Response): Promise<void> {
   if (!req.session.isLoggedIn) {
-    res.sendStatus(401).json({ error: 'Not logged In' });
+    res.sendStatus(401).json({ error: 'Not Logged In' });
     return;
   }
 
@@ -106,7 +106,7 @@ async function deleteLink(req: Request, res: Response): Promise<void> {
   const user = await getUserById(userId);
 
   if (!user) {
-    res.sendStatus(402).json({ error: 'User not found' });
+    res.sendStatus(402).json({ error: 'User: Not Found' });
     return;
   }
   if (!isAdmin) {
@@ -115,7 +115,7 @@ async function deleteLink(req: Request, res: Response): Promise<void> {
 
   const link = await getLinkById(LinkId);
   if (!link) {
-    res.sendStatus(404).json({ error: 'Link not found ' });
+    res.sendStatus(404).json({ error: 'Link: Not Found ' });
   }
 
   try {
