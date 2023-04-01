@@ -6,6 +6,7 @@ import {
   updateLinkVisits,
   getLinksByUserId,
   getLinksByUserIdForOwnAccount,
+  deleteLinkById,
 } from '../models/LinkModel';
 import { getUserById } from '../models/UserModel';
 import { parseDatabaseError } from '../utils/db-utils';
@@ -94,4 +95,37 @@ async function getLinkForProAdmin(req: Request, res: Response): Promise<void> {
   }
 }
 
-export { shortenUrl, getOriginalUrl, getLinkForProAdmin };
+async function deleteLink(req: Request, res: Response): Promise<void> {
+  if (!req.session.isLoggedIn) {
+    res.sendStatus(401).json({ error: 'Not logged In' });
+    return;
+  }
+
+  const { LinkId } = req.body as UserLinkID;
+  const { userId, isAdmin } = req.session.authenticatedUser;
+  const user = await getUserById(userId);
+
+  if (!user) {
+    res.sendStatus(402).json({ error: 'User not found' });
+    return;
+  }
+  if (!isAdmin) {
+    res.sendStatus(403).json({ error: 'Not Admin' });
+  }
+
+  const link = await getLinkById(LinkId);
+  if (!link) {
+    res.sendStatus(404).json({ error: 'Link not found ' });
+  }
+
+  try {
+    await deleteLinkById(LinkId);
+    res.sendStatus(204);
+  } catch (err) {
+    console.error(err);
+    const databaseErrorMessage = parseDatabaseError(err);
+    res.sendStatus(500).json(databaseErrorMessage);
+  }
+}
+
+export { shortenUrl, getOriginalUrl, getLinkForProAdmin, deleteLink };
