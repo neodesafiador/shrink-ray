@@ -1,3 +1,0 @@
-type OriginalUrl = {
-  originalUrl: string;
-};
