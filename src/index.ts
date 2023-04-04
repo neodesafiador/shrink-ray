@@ -13,6 +13,8 @@ const { PORT, COOKIE_SECRET } = process.env;
 
 const SQLiteStore = connectSqlite3(session);
 
+app.use(express.static('public', { extensions: ['html'] }));
+
 app.use(
   session({
     store: new SQLiteStore({ db: 'sessions.sqlite' }),
