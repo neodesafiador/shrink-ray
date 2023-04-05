@@ -13,7 +13,7 @@ import { getUserById } from '../models/UserModel';
 
 async function shortenUrl(req: Request, res: Response): Promise<void> {
   if (!req.session.isLoggedIn) {
-    res.sendStatus(403);
+    res.redirect('/login');
     return;
   }
 
@@ -38,7 +38,7 @@ async function shortenUrl(req: Request, res: Response): Promise<void> {
   try {
     const newLink = await createNewLink(originalUrl, linkId, user);
     newLink.user.passwordHash = undefined;
-    res.status(201).json(newLink);
+    res.redirect('/login');
   } catch (err) {
     console.error(err);
     const databaseErrorMessage = parseDatabaseError(err);
@@ -77,7 +77,7 @@ async function removeLink(req: Request, res: Response): Promise<void> {
   const { targetUserId, targetLinkId } = req.params as DeleteLinkRequest;
   const { isLoggedIn, authenticatedUser } = req.session;
   if (!isLoggedIn) {
-    res.sendStatus(401);
+    res.redirect('/login');
     return;
   }
 
